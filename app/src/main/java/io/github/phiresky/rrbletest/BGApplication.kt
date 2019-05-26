@@ -30,9 +30,8 @@ import android.view.WindowManager
 import android.os.PowerManager
 import android.app.Activity
 import android.app.KeyguardManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
-
-
 
 
 class BGApplication : Application(), BootstrapNotifier {
@@ -52,35 +51,16 @@ class BGApplication : Application(), BootstrapNotifier {
             ParcelUuid.fromString("0000aa20-0000-1000-8000-00805f9b34fb"),
             ParcelUuid.fromString("FFFFFFFF-0000-0000-0000-000000000000")
         ).build()
-        val settings = ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_POWER).build()
-        val ctx = this
-        bluetoothAdapter!!.bluetoothLeScanner!!.startScan(listOf(filter), settings, object : ScanCallback() {
-            override fun onScanResult(callbackType: Int, result: ScanResult?) {
-                // 2019-05-24 15:18:20.555 12663-12663/io.github.phiresky.rrbletest I/.BGApplication: SCANRESULT 1 ScanResult{device=D0:1B:0E:C3:6A:64, scanRecord=ScanRecord [mAdvertiseFlags=6, mServiceUuids=[0000aa20-0000-1000-8000-00805f9b34fb], mServiceSolicitationUuids=null, mManufacturerSpecificData={6400=[8, 0, 42, 6, 83, -48, 27, 14, -61, 106, 100]}, mServiceData={}, mTxPowerLevel=-2147483648, mDeviceName=Jinou_Sensor_HumiTemp], rssi=-90, timestampNanos=3712250754077, eventType=27, primaryPhy=1, secondaryPhy=0, advertisingSid=255, txPower=127, periodicAdvertisingInterval=0}
-                Log.i(TAG, "SCANRESULT $callbackType $result")
+        val settings = ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
+            .setLegacy(false)
+            .setMatchMode(ScanSettings.MATCH_MODE_AGGRESSIVE)
+            .build()
+        val intent = Intent(this, MyBroadcastReceiver::class.java)
+        intent.action = "io.github.phiresky.BLE_FOOOOUND"
+        intent.putExtra("o-scan", true)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-                val intent = Intent(ctx, MainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                ctx.startActivity(intent)
-
-                val lock = (getSystemService(Activity.KEYGUARD_SERVICE) as KeyguardManager).newKeyguardLock(Context.KEYGUARD_SERVICE)
-                val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-                val wake = powerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK or PowerManager.FULL_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP, "rr_test:wakeupthing")
-
-                lock.disableKeyguard()
-                wake.acquire(10000)
-
-               /* getWindow().addFlags(
-                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                            or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-                            or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                            or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                            or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
-                )*/
-            }
-
-
-        })
+        bluetoothAdapter!!.bluetoothLeScanner!!.startScan(listOf(filter), settings, pendingIntent)
 
 
         /*val beaconManager = BeaconManager.getInstanceForApplication(this)
