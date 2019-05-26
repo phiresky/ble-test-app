@@ -34,7 +34,7 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 
 
-class BGApplication : Application(), BootstrapNotifier {
+class BGApplication : Application() { //, BootstrapNotifier {
     private var regionBootstrap: RegionBootstrap? = null
     private var backgroundPowerSaver: BackgroundPowerSaver? = null
 
@@ -79,27 +79,27 @@ class BGApplication : Application(), BootstrapNotifier {
 
     }
 
+    /*
+        override fun didDetermineStateForRegion(arg0: Int, arg1: Region) {
+            // Don't care
+        }
 
-    override fun didDetermineStateForRegion(arg0: Int, arg1: Region) {
-        // Don't care
-    }
+        override fun didEnterRegion(arg0: Region) {
+            Log.d(TAG, "Got a didEnterRegion call")
+            // This call to disable will make it so the activity below only gets launched the first time a beacon is seen (until the next time the app is launched)
+            // if you want the Activity to launch every single time beacons come into view, remove this call.
+            // regionBootstrap!!.disable()
+            val intent = Intent(this, MainActivity::class.java)
+            // IMPORTANT: in the AndroidManifest.xml definition of this activity, you must set android:launchMode="singleInstance" or you will get two instances
+            // created when a user launches the activity manually and it gets launched from here.
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            this.startActivity(intent)
+        }
 
-    override fun didEnterRegion(arg0: Region) {
-        Log.d(TAG, "Got a didEnterRegion call")
-        // This call to disable will make it so the activity below only gets launched the first time a beacon is seen (until the next time the app is launched)
-        // if you want the Activity to launch every single time beacons come into view, remove this call.
-        // regionBootstrap!!.disable()
-        val intent = Intent(this, MainActivity::class.java)
-        // IMPORTANT: in the AndroidManifest.xml definition of this activity, you must set android:launchMode="singleInstance" or you will get two instances
-        // created when a user launches the activity manually and it gets launched from here.
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        this.startActivity(intent)
-    }
-
-    override fun didExitRegion(arg0: Region) {
-        // Don't care
-    }
-
+        override fun didExitRegion(arg0: Region) {
+            // Don't care
+        }
+    */
     companion object {
         private val TAG = ".BGApplication"
     }

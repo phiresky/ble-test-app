@@ -28,7 +28,7 @@ import android.os.Vibrator
 
 
 //020106030220aa0eff0018040027055ad01b0ec36a6416094a696e6f755f53656e736f725f48756d6954656d700000000000000000000000000000000000
-class MainActivity : Activity(), BeaconConsumer {
+class MainActivity : Activity() { //, BeaconConsumer {
     private var beaconManager: BeaconManager? = null
     private val PERMISSION_REQUEST_COARSE_LOCATION = 1
     private val REQUEST_ENABLE_BT = 2
@@ -111,6 +111,7 @@ class MainActivity : Activity(), BeaconConsumer {
         /*beaconManager!!.unbind(this)*/
     }
 
+    /*
     override fun onBeaconServiceConnect() {
         beaconManager!!.removeAllRangeNotifiers()
         beaconManager!!.addRangeNotifier(object : RangeNotifier {
@@ -140,7 +141,7 @@ class MainActivity : Activity(), BeaconConsumer {
             Log.e(TAG, "hi", e)
         }
 
-    }
+    }*/
 
     companion object {
         protected val TAG = "RangingActivity"
